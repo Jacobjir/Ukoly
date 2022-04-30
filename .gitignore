@@ -1,0 +1,12 @@
+/Ukol3fizzbuzz/out/
+/Ukol3fizzbuzz/.idea/
+/Ukol2/out/
+/Ukol2/.idea/
+/Ukol1/out/
+/Ukol1/.idea/
+/.idea/
+/Ukol3Ifloopswitch/out/
+/Ukol3Ifloopswitch/.idea/
+**/*.iml
+**/.idea/**
+**/out/**
