@@ -1,9 +1,6 @@
 package com.engeto.kvetiny;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
+import java.io.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -14,52 +11,56 @@ public class PlantList {
 
     List<Plant> plants = new ArrayList<>();
 
-    public static String importFromFile(String filename, String delimiter)
-            throws PlantException, FileNotFoundException {
-        String nextLine = "";
-        String[] items = new String[1];
-        String name;
-        String notes;
-        BigDecimal frequencyOfWatering;
-        LocalDate planted;
-        LocalDate watering;
-        int lineNumber = 0;
-
-        PlantList result = new PlantList();
-
-        try (Scanner scanner = new Scanner(new BufferedReader(new FileReader(filename)))) {
-            while (scanner.hasNextLine()) {
-                lineNumber++;
-                nextLine = scanner.nextLine();
-                items = nextLine.split("\t");
-                name = items[0];
-                notes = items[1];
-                frequencyOfWatering = new BigDecimal(items[2]);
-                planted = LocalDate.parse(items[3]);
-                watering = LocalDate.parse(items[4]);
-                result.addPlant(new Plant(name,notes,frequencyOfWatering,planted,watering));
-            }
-            }
-        catch (FileNotFoundException e) {
-        try {
-            throw new PlantException("Soubor nebyl nalezen");
-        } catch (PlantException ex) {
-            ex.printStackTrace();
-        }
-    }
-        return result;
-    }
+    private static final String DELIMITER = "\t";
 
     public void addPlant(Plant plant) {
         plants.add(plant);
     }
 
-    public Plant getplant(int index){
+    public Plant getPlant(int index) {
         return plants.get(index);
     }
 
     public void removePlant(int index) {
         plants.remove(index);
+    }
+
+    public int size() {
+        return plants.size();
+    }
+
+    public void importFromFile(String fileName)
+        throws PlantException {
+        try (Scanner scanner = new Scanner(new BufferedReader(new FileReader(fileName)))) {
+            int lineNumber = 0;
+            while (scanner.hasNextLine()) {
+                String record = scanner.nextLine();
+                lineNumber++;
+                try {
+                    this.addPlant(Plant.parse(record,DELIMITER));
+                }
+                catch (PlantException e) {
+                    throw new PlantException("Špatný vstupní soubor " + fileName + " na řádku: " +lineNumber + ":\n\t" +e.getLocalizedMessage());
+                }
+            }
+        } catch (FileNotFoundException e) {
+            throw new PlantException("Vstupní soubor " +fileName +" nebyl nalezen: " +e.getLocalizedMessage());
+        }
+    }
+
+    public void exportToFile(String fileName)
+        throws PlantException {
+
+        int lineNumber = 0;
+        try (PrintWriter writer = new PrintWriter(new BufferedWriter(new FileWriter(fileName)))) {
+            for (Plant plant : plants) {
+                String plantsAsFileLine = plant.prepareOutputString(DELIMITER);
+                writer.println(fileName);
+                lineNumber++;
+            }
+        } catch (IOException e) {
+            throw new PlantException("Chyba při zapisování do: " + fileName + " řádek č." + lineNumber + ": " + e.getLocalizedMessage());
+        }
     }
 
 }
