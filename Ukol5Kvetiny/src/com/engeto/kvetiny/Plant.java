@@ -102,4 +102,15 @@ public class Plant {
     public String getWateringInfo() {
         return "Název: " + getName() + ". Poslední zalevání: " +watering + ". Doporučené datum dalšího zalévání: " + watering.plusDays(getFrequencyOfWatering()) +".";
     }
+
+    @Override
+    public String toString() {
+        return "Plant{" +
+                "name='" + name + '\'' +
+                ", notes='" + notes + '\'' +
+                ", planted=" + planted +
+                ", watering=" + watering +
+                ", frequencyOfWatering=" + frequencyOfWatering +
+                '}';
+    }
 }

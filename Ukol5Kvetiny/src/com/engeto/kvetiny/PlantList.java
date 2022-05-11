@@ -63,4 +63,10 @@ public class PlantList {
         }
     }
 
+    @Override
+    public String toString() {
+        return "PlantList{" +
+                "plants=" + plants +
+                '}';
+    }
 }
